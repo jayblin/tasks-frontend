@@ -1,6 +1,7 @@
 <template>
 	<!--<img alt="Vue logo" src="./assets/logo.png"> -->
 	<TaskList :tasks="tasks" :statuses="statuses" />
+	<Paginator @navigated="paginate" />
 </template>
 
 <script lang="ts">
@@ -9,14 +10,17 @@ import { defineComponent } from 'vue';
 import TaskList from '@/components/TaskList.vue';
 import { TaskObject } from '@/components/Task.vue';
 import { StatusObject } from '@/components/TaskStatus.vue';
+import Paginator from '@/components/Paginator.vue';
 
-function fetchTasks()
+function fetchTasks(aPage = 1, aLimit = 10)
 {
 	const path = '/api/tasks';
 	const apiHost = 'http://localhost:3000';
 	const url = new URL(apiHost + path);
 	
-	url.searchParams.set('db', 'cengine');
+	url.searchParams.append('db', 'cengine');
+	url.searchParams.append('page', aPage.toString());
+	url.searchParams.append('limit', aLimit.toString());
 
 	return fetch(url.toString(),{
 		method: 'GET',
@@ -49,7 +53,8 @@ export default defineComponent({
 	name: 'App',
 	components: {
     	/* Counter, */
-		TaskList
+		TaskList,
+		Paginator,
 	},
 	data() {
 		return {
@@ -57,10 +62,12 @@ export default defineComponent({
 			statuses: [] as StatusObject[],
 		};
 	},
+	methods: {
+		paginate(aPage: number, aLimit: number) {
+			fetchTasks(aPage, aLimit).then(aJson => { this.tasks = aJson; });
+		}
+	},
 	mounted() {
-		fetchTasks()
-		.then(aJson => { this.tasks = aJson; }) ;
-		
 		fetchStatuses()
 		.then(aJson => { this.statuses = aJson; });
 	},
