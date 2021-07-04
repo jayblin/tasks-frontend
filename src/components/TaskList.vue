@@ -43,7 +43,44 @@ export default TaskList;
 </script>
 
 <style>
-ul.task-list {
+.task-list {
 	list-style: none;
+	padding: 1em;
+	background-color: #f5f5f552;
+	width: 80ch;
+	margin: 0 auto;
 }
+.task-list li {
+	margin-bottom: 1em;
+}
+.task-list-item {
+	display: grid;
+	grid-template-columns: auto 14ch;
+	max-height: 4ch;
+	min-height: 4ch;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+.task-list-item .task {
+	display: grid;
+	grid-template-columns: max-content 0fr 1fr;
+	text-align: start;
+}
+.task-list-item .task-id {
+	margin-right: 1em;
+}
+.task-list-item .task-status {
+	font-size: 0.8em;
+}
+.task-list-item .task-status-id {
+	display: none;
+}
+.task-list-item .task-status-title {
+	display: flex;
+	width: 100%;
+	height: 100%;
+	align-items: center;
+	justify-content: center;
+}
+
 </style>
