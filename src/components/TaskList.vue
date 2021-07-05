@@ -56,7 +56,6 @@ export default TaskList;
 .task-list-item {
 	display: grid;
 	grid-template-columns: auto 14ch;
-	min-height: 4ch;
 	overflow: hidden;
 	text-overflow: ellipsis;
 	border-bottom: 1px solid #cccccc;
