@@ -4,12 +4,18 @@
 		<div class="task_title"></div>
 		<div class="task_created-at">Создано: {{ readableCreatedAt }}</div>
 		<div class="task_description" ref='description'>
+			{{ item.description }}
+		</div>
+		<div class="task_controls">
+			<button
+				@click="toggleEdit"
+				class="btn edit"
+			/>
 			<button 
 				class="btn task_description-expander" 
 				v-if="!descriptionFits"
 				@click="toggleDescription"
 			/>
-			{{ item.description }}
 		</div>
 	</div>
 </template>
@@ -56,6 +62,9 @@ const Task = defineComponent({
 				desc.style.setProperty('max-height', 'fit-content');
 			}
 		},
+		toggleEdit(): void {
+			console.log('edit!');
+		}
 	},
 	computed: {
 		readableCreatedAt(): string {
@@ -75,12 +84,14 @@ export default Task;
 <style>
 .task {
 	display: grid;
-	grid-template-columns: 4ch auto;
+	grid-template-columns: 4ch auto 3ch;
+	grid-template-rows: 1em auto;
 	grid-template-areas: 
-		"id created"
-		"descr descr";
+		"id created controls"
+		"descr descr controls";
 	text-align: start;
-	row-gap: 0.5em;
+	row-gap: 1em;
+	min-height: 9ch;
 }
 .task_id {
 	margin-right: 1em;
@@ -91,6 +102,7 @@ export default Task;
 	grid-area: descr;
 	white-space: break-spaces;
 	max-height: 3ch;
+	min-height: 3ch;
 	overflow: hidden;
 	position: relative;
 }
@@ -98,11 +110,17 @@ export default Task;
 	margin-right: 1em;
 	grid-area: created;
 }
-.btn.task_description-expander {
-	width: 24px;
-	height: 24px;
-	position: absolute;
-	top: 0;
-	right: 0px;
+.task_controls {
+	grid-area: controls;
+	display: grid;
+	grid-template-columns: 3ch;
+	grid-auto-flow: row;
+	row-gap: 2px;
+	height: fit-content;
+}
+.task_controls .btn {
+	width: 3ch;
+	height: 3ch;
+	cursor: pointer
 }
 </style>
