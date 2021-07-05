@@ -59,27 +59,22 @@ export default TaskList;
 	min-height: 4ch;
 	overflow: hidden;
 	text-overflow: ellipsis;
-}
-.task-list-item .task {
-	display: grid;
-	grid-template-columns: max-content 0fr 1fr;
-	text-align: start;
-}
-.task-list-item .task-id {
-	margin-right: 1em;
+	border-bottom: 1px solid #cccccc;
 }
 .task-list-item .task-status {
 	font-size: 0.8em;
 }
-.task-list-item .task-status-id {
+.task-list-item .task-status_id {
 	display: none;
 }
-.task-list-item .task-status-title {
+.task-list-item .task-status_title {
 	display: flex;
 	width: 100%;
 	height: 100%;
 	align-items: center;
 	justify-content: center;
 }
-
+.task-list-item .task-status::after {
+	border-right: 2px solid #ffffff9e;
+}
 </style>

@@ -1,7 +1,7 @@
 <template>
 	<div class="task-status" :class="modifyClass()">
-		<span class="task-status-id">{{ item.id }}</span>
-		<span class="task-status-title">{{ item.title }}</span>
+		<span class="task-status_id">{{ item.id }}</span>
+		<span class="task-status_title">{{ item.title }}</span>
 	</div>
 </template>
 
