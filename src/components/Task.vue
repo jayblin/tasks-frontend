@@ -3,9 +3,14 @@
 		<div class="task_id">{{ item.id }}</div>
 		<div class="task_title"></div>
 		<div class="task_created-at">Создано: {{ readableCreatedAt }}</div>
-		<div class="task_description" ref='description'>
-			{{ item.description }}
-		</div>
+		<textarea 
+			class="task_description" 
+			v-model="item.description" 
+			ref='description'
+			:disabled="inInputMode"
+			resize="none"
+			@input="onDescriptionInput"
+		/>
 		<div class="task_controls">
 			<button
 				@click="toggleEdit"
@@ -13,7 +18,7 @@
 			/>
 			<button 
 				class="btn task_description-expander" 
-				v-if="!descriptionFits"
+				v-if="!doesDescriptionFit()"
 				@click="toggleDescription"
 			/>
 		</div>
@@ -40,7 +45,9 @@ const Task = defineComponent({
 	},
 	data() {
 		return {
-			descriptionFits: true,
+			inInputMode: true,
+		} as {
+			inInputMode: boolean,
 		};
 	},
 	methods: {
@@ -56,26 +63,48 @@ const Task = defineComponent({
 		toggleDescription(): void {
 			const desc = this.$refs.description as HTMLDivElement;
 
-			if (desc.style.getPropertyValue('max-height')) {
-				desc.style.setProperty('max-height', null);
-			} else {
-				desc.style.setProperty('max-height', 'fit-content');
+			if (desc.style.getPropertyValue('height')) {
+				this.shrinkDescription();
+			}
+			else {
+				this.expandDescription();
 			}
 		},
+		expandDescription(): void {
+			const desc = this.$refs.description as HTMLDivElement;
+			desc.style.setProperty('height', `${desc.scrollHeight}px`);
+		},
+		shrinkDescription(): void {
+			const desc = this.$refs.description as HTMLDivElement;
+			desc.style.setProperty('height', null);
+		},
 		toggleEdit(): void {
-			console.log('edit!');
-		}
+			this.inInputMode = !this.inInputMode;
+
+			if (this.inInputMode) {
+				this.shrinkDescription();
+			}
+			else {
+				this.expandDescription();
+			}
+		},
+		doesDescriptionFit(): boolean {
+			const desc = this.$refs.description as HTMLDivElement;
+
+			return desc && desc.clientHeight === desc.scrollHeight;
+		},
+		onDescriptionInput(): void {
+			if (!this.doesDescriptionFit()) {
+				this.expandDescription();
+			}
+		},
 	},
 	computed: {
 		readableCreatedAt(): string {
 			return this.toReadableDate(this.item.createdAt);
 		}
 	},
-	mounted() {
-		const desc = this.$refs.description as HTMLDivElement;
-
-		this.descriptionFits = desc.clientHeight === desc.scrollHeight;
-	}
+	mounted() {}
 });
 
 export default Task;
@@ -101,10 +130,18 @@ export default Task;
 	margin-right: 1em;
 	grid-area: descr;
 	white-space: break-spaces;
-	max-height: 3ch;
 	min-height: 3ch;
 	overflow: hidden;
 	position: relative;
+	resize: none;
+	font: inherit;
+	background-color: transparent;
+	border: none;
+	outline: 1px solid #cccccc;
+	outline-offset: -1px;
+}
+.task_description:disabled {
+	outline: none;
 }
 .task_created-at {
 	margin-right: 1em;
