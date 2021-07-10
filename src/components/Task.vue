@@ -3,23 +3,21 @@
 		<div class="task_id">{{ item.id }}</div>
 		<div class="task_title"></div>
 		<div class="task_created-at">Создано: {{ readableCreatedAt }}</div>
-		<textarea 
-			class="task_description" 
-			v-model="item.description" 
-			ref='description'
-			:disabled="inInputMode"
-			resize="none"
-			@input="onDescriptionInput"
-		/>
+		<Fold :opened="foldOpened" ref="fold">
+			<template v-slot:content>
+				<textarea 
+					class="task_description" 
+					v-model="item.description" 
+					ref='description'
+					:disabled="!inInputMode"
+					@input="onDescriptionInput"
+				/>
+			</template>
+		</Fold>
 		<div class="task_controls">
 			<button
 				@click="toggleEdit"
 				class="btn edit"
-			/>
-			<button 
-				class="btn task_description-expander" 
-				v-if="!doesDescriptionFit()"
-				@click="toggleDescription"
 			/>
 		</div>
 	</div>
@@ -27,6 +25,7 @@
 
 <script lang="ts">
 import { defineComponent, PropType } from 'vue';
+import Fold from '@/components/Fold.vue';
 
 export type TaskObject = {
 	id: number,
@@ -37,6 +36,9 @@ export type TaskObject = {
 
 const Task = defineComponent({
 	name: "Task",
+	components: {
+		Fold,
+	},
 	props: {
 		item: {
 			type: Object as PropType<TaskObject>,
@@ -45,9 +47,8 @@ const Task = defineComponent({
 	},
 	data() {
 		return {
-			inInputMode: true,
-		} as {
-			inInputMode: boolean,
+			inInputMode: false,
+			foldOpened: false,
 		};
 	},
 	methods: {
@@ -60,43 +61,21 @@ const Task = defineComponent({
 
 			return format.format(date);
 		},
-		toggleDescription(): void {
-			const desc = this.$refs.description as HTMLDivElement;
-
-			if (desc.style.getPropertyValue('height')) {
-				this.shrinkDescription();
-			}
-			else {
-				this.expandDescription();
-			}
-		},
-		expandDescription(): void {
-			const desc = this.$refs.description as HTMLDivElement;
-			desc.style.setProperty('height', `${desc.scrollHeight}px`);
-		},
-		shrinkDescription(): void {
-			const desc = this.$refs.description as HTMLDivElement;
-			desc.style.setProperty('height', null);
-		},
 		toggleEdit(): void {
 			this.inInputMode = !this.inInputMode;
+			console.log(this.inInputMode)
 
+			const fold = this.$refs.fold as any;
 			if (this.inInputMode) {
-				this.shrinkDescription();
+				fold.open();
 			}
 			else {
-				this.expandDescription();
+				fold.close();
 			}
 		},
-		doesDescriptionFit(): boolean {
-			const desc = this.$refs.description as HTMLDivElement;
-
-			return desc && desc.clientHeight === desc.scrollHeight;
-		},
-		onDescriptionInput(): void {
-			if (!this.doesDescriptionFit()) {
-				this.expandDescription();
-			}
+		onDescriptionInput() {
+			const fold = this.$refs.fold as any;
+			fold.resize();
 		},
 	},
 	computed: {
@@ -131,17 +110,16 @@ export default Task;
 	grid-area: descr;
 	white-space: break-spaces;
 	min-height: 3ch;
-	overflow: hidden;
-	position: relative;
-	resize: none;
 	font: inherit;
-	background-color: transparent;
+	background-color: white;
 	border: none;
 	outline: 1px solid #cccccc;
 	outline-offset: -1px;
+	resize: none;
 }
 .task_description:disabled {
 	outline: none;
+	background-color: transparent;
 }
 .task_created-at {
 	margin-right: 1em;
