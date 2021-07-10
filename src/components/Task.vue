@@ -14,12 +14,6 @@
 				/>
 			</template>
 		</Fold>
-		<div class="task_controls">
-			<button
-				@click="toggleEdit"
-				class="btn edit"
-			/>
-		</div>
 	</div>
 </template>
 
@@ -63,7 +57,6 @@ const Task = defineComponent({
 		},
 		toggleEdit(): void {
 			this.inInputMode = !this.inInputMode;
-			console.log(this.inInputMode)
 
 			const fold = this.$refs.fold as any;
 			if (this.inInputMode) {
@@ -92,11 +85,11 @@ export default Task;
 <style>
 .task {
 	display: grid;
-	grid-template-columns: 4ch auto 3ch;
+	grid-template-columns: 4ch auto;
 	grid-template-rows: 1em auto;
 	grid-template-areas: 
-		"id created controls"
-		"descr descr controls";
+		"id created"
+		"descr descr";
 	text-align: start;
 	row-gap: 1em;
 	min-height: 9ch;
@@ -106,7 +99,6 @@ export default Task;
 	grid-area: id;
 }
 .task_description {
-	margin-right: 1em;
 	grid-area: descr;
 	white-space: break-spaces;
 	min-height: 3ch;
@@ -124,18 +116,5 @@ export default Task;
 .task_created-at {
 	margin-right: 1em;
 	grid-area: created;
-}
-.task_controls {
-	grid-area: controls;
-	display: grid;
-	grid-template-columns: 3ch;
-	grid-auto-flow: row;
-	row-gap: 2px;
-	height: fit-content;
-}
-.task_controls .btn {
-	width: 3ch;
-	height: 3ch;
-	cursor: pointer
 }
 </style>

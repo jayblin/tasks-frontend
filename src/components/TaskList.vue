@@ -5,8 +5,16 @@
 			v-for="task in tasks" 
 			:key="task.id"
 		>
-			<Task :item="task"  />
-			<TaskStatus v-if="statuses.length > 0" :item="findRelatedStatus(task.status)" />
+			<Task :item="task" ref="taskComponent" />
+			<TaskStatus 
+				v-if="statuses.length > 0" 
+				:item="findRelatedStatus(task.status)"
+			/>
+			<TaskControls 
+				:item="task"
+				:onSave="onSave"
+				:onToggleEdit="onToggleEdit"
+			/>
 		</li>
 	</ul>
 </template>
@@ -15,12 +23,14 @@
 import { defineComponent, PropType } from 'vue' ;
 import Task, { TaskObject } from '@/components/Task.vue';
 import TaskStatus, { StatusObject } from '@/components/TaskStatus.vue';
+import TaskControls from '@/components/TaskControls.vue';
 
 const TaskList = defineComponent({
 	name: "TaskList",
 	components: {
 		Task,
 		TaskStatus,
+		TaskControls,
 	},
 	props: {
 		tasks: {
@@ -35,7 +45,34 @@ const TaskList = defineComponent({
 	methods: {
 		findRelatedStatus(id: number) {
 			return this.statuses.find(s => s.id === id) as StatusObject;
-		}
+		},
+		async onSave(aTask: TaskObject) {
+			const path = '/api/tasks';
+			const apiHost = 'http://localhost:3000';
+			const url = new URL(apiHost + path);
+
+			url.searchParams.set('db', 'cengine');
+
+			const result = await fetch(
+				url.toString(),
+				{
+					method: 'PATCH',
+					headers: {
+						'Content-Type': 'application/json;charset=utf-8',
+					},
+					body: JSON.stringify(aTask),
+				}
+			);
+
+			console.log(await result.json());
+		},
+		onToggleEdit(aEditing: boolean) {
+			const taskComponent = this.$refs.taskComponent as any;
+
+			if (taskComponent) {
+				taskComponent.toggleEdit();
+			}
+		},
 	}
 });
 
@@ -55,7 +92,7 @@ export default TaskList;
 }
 .task-list-item {
 	display: grid;
-	grid-template-columns: auto 14ch;
+	grid-template-columns: auto 14ch 4ch;
 	overflow: hidden;
 	text-overflow: ellipsis;
 	border-bottom: 1px solid #cccccc;
