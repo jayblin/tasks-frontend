@@ -8,7 +8,8 @@
 			<Task :item="task" ref="taskComponent" />
 			<TaskStatus 
 				v-if="statuses.length > 0" 
-				:item="findRelatedStatus(task.status)"
+				:task="task"
+				:statuses="statuses"
 			/>
 			<TaskControls 
 				:item="task"
@@ -78,7 +79,7 @@ export default TaskList;
 }
 .task-list-item {
 	display: grid;
-	grid-template-columns: auto 14ch 4ch;
+	grid-template-columns: auto 15ch 4ch;
 	overflow: hidden;
 	text-overflow: ellipsis;
 	border-bottom: 1px solid #cccccc;
