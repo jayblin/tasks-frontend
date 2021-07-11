@@ -2,6 +2,7 @@
 	<!--<img alt="Vue logo" src="./assets/logo.png"> -->
 	<TaskList :tasks="tasks" :statuses="statuses" />
 	<Paginator @navigated="paginate" />
+	<NotificationList :items="notifications" />
 </template>
 
 <script lang="ts">
@@ -11,15 +12,14 @@ import TaskList from '@/components/TaskList.vue';
 import { TaskObject } from '@/components/Task.vue';
 import { StatusObject } from '@/components/TaskStatus.vue';
 import Paginator from '@/components/Paginator.vue';
-import API from '@/utils/api';
-
+import NotificationList from '@/components/NotificationList.vue';
+import api, { APINotification } from '@/utils/api';
 
 async function fetchTasks(
 	aPage: number = 1,
 	aLimit: number = 10
 ): Promise<TaskObject[]>
 {
-	const api = new API();
 	const tasks = await api.get<TaskObject[]>('/api/tasks', {
 		db: 'cengine',
 		page: aPage.toString(),
@@ -35,7 +35,6 @@ async function fetchTasks(
 
 async function fetchStatuses(): Promise<StatusObject[]>
 {
-	const api = new API();
 	const statuses =  await api.get<StatusObject[]>('/api/statuses', {
 		db: 'cengine',
 	});
@@ -53,11 +52,13 @@ export default defineComponent({
     	/* Counter, */
 		TaskList,
 		Paginator,
+		NotificationList,
 	},
 	data() {
 		return {
 			tasks: [] as TaskObject[],
 			statuses: [] as StatusObject[],
+			notifications: [] as APINotification[],
 		};
 	},
 	methods: {
@@ -71,6 +72,10 @@ export default defineComponent({
 		const statuses = await fetchStatuses();
 
 		this.statuses = statuses;
+
+		api.handleNotifications = (notifications) => {
+			this.notifications = notifications;
+		};
 	},
 });
 </script>
@@ -83,5 +88,6 @@ export default defineComponent({
   text-align: center;
   color: #2c3e50;
   margin-top: 60px;
+  position: relative;
 }
 </style>

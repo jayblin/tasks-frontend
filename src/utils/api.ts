@@ -12,6 +12,7 @@ class API
 {
 	public readonly host = 'http://localhost';
 	public readonly port = '3000';
+	public handleNotifications: (notifications: APINotification[]) => void = () => {};
 
 	public constructor()
 	{
@@ -69,10 +70,16 @@ class API
 		}
 
 		const response = await fetch(aPath, init);
-		const result = await response.json();
+		const result = await response.json() as APIResponse<T>;
+
+		if (result.notifications) {
+			this.handleNotifications(result.notifications);
+		}
 
 		return result;
 	}
 };
 
-export default API;
+const inst = new API();
+
+export default inst;
