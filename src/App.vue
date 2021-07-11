@@ -11,42 +11,40 @@ import TaskList from '@/components/TaskList.vue';
 import { TaskObject } from '@/components/Task.vue';
 import { StatusObject } from '@/components/TaskStatus.vue';
 import Paginator from '@/components/Paginator.vue';
+import API from '@/utils/api';
 
-function fetchTasks(aPage = 1, aLimit = 10)
+
+async function fetchTasks(
+	aPage: number = 1,
+	aLimit: number = 10
+): Promise<TaskObject[]>
 {
-	const path = '/api/tasks';
-	const apiHost = 'http://localhost:3000';
-	const url = new URL(apiHost + path);
-	
-	url.searchParams.append('db', 'cengine');
-	url.searchParams.append('page', aPage.toString());
-	url.searchParams.append('limit', aLimit.toString());
+	const api = new API();
+	const tasks = await api.get<TaskObject[]>('/api/tasks', {
+		db: 'cengine',
+		page: aPage.toString(),
+		limit: aLimit.toString(),
+	});
 
-	return fetch(url.toString(),{
-		method: 'GET',
-		headers: {
-			'Content-Type': 'application/json;charset=utf-8'
-		},
-		mode: 'cors',
-	})
-	.then(aRes => aRes.json());
+	if (!tasks.data) {
+		return [];
+	}
+
+	return tasks.data;
 }
 
-function fetchStatuses()
+async function fetchStatuses(): Promise<StatusObject[]>
 {
-	const path = '/api/statuses';
-	const apiHost = 'http://localhost:3000';
-	const url = new URL(apiHost + path);
-	
-	url.searchParams.set('db', 'cengine');
+	const api = new API();
+	const statuses =  await api.get<StatusObject[]>('/api/statuses', {
+		db: 'cengine',
+	});
 
-	return fetch(url.toString(),{
-		method: 'GET',
-		headers: {
-			'Content-Type': 'application/json;charset=utf-8'
-		}
-	})
-	.then(aRes => aRes.json());
+	if (!statuses.data) {
+		return [];
+	}
+
+	return statuses.data;
 }
 
 export default defineComponent({
@@ -63,13 +61,16 @@ export default defineComponent({
 		};
 	},
 	methods: {
-		paginate(aPage: number, aLimit: number) {
-			fetchTasks(aPage, aLimit).then(aJson => { this.tasks = aJson; });
+		async paginate(aPage: number, aLimit: number) {
+			const tasks = await fetchTasks(aPage, aLimit);
+
+			this.tasks = tasks;
 		}
 	},
-	mounted() {
-		fetchStatuses()
-		.then(aJson => { this.statuses = aJson; });
+	async mounted() {
+		const statuses = await fetchStatuses();
+
+		this.statuses = statuses;
 	},
 });
 </script>

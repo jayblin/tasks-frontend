@@ -24,6 +24,7 @@ import { defineComponent, PropType } from 'vue' ;
 import Task, { TaskObject } from '@/components/Task.vue';
 import TaskStatus, { StatusObject } from '@/components/TaskStatus.vue';
 import TaskControls from '@/components/TaskControls.vue';
+import API from '@/utils/api';
 
 const TaskList = defineComponent({
 	name: "TaskList",
@@ -47,24 +48,9 @@ const TaskList = defineComponent({
 			return this.statuses.find(s => s.id === id) as StatusObject;
 		},
 		async onSave(aTask: TaskObject) {
-			const path = '/api/tasks';
-			const apiHost = 'http://localhost:3000';
-			const url = new URL(apiHost + path);
+			const api = new API();
 
-			url.searchParams.set('db', 'cengine');
-
-			const result = await fetch(
-				url.toString(),
-				{
-					method: 'PATCH',
-					headers: {
-						'Content-Type': 'application/json;charset=utf-8',
-					},
-					body: JSON.stringify(aTask),
-				}
-			);
-
-			console.log(await result.json());
+			api.patch('/api/tasks', {db: 'cengine'}, aTask);
 		},
 		onToggleEdit(aEditing: boolean) {
 			const taskComponent = this.$refs.taskComponent as any;
