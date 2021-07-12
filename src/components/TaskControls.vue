@@ -18,12 +18,12 @@ import { TaskObject } from '@/components/Task.vue';
 const TaskControls = defineComponent({
 	name: "TaskControls",
 	props: {
-		item: {
+		task: {
 			type: Object as PropType<TaskObject>,
 			required: true,
 		},
 		onToggleEdit: {
-			type: Function as PropType<(aEditing: boolean) => void>,
+			type: Function as PropType<(aTask: TaskObject, aEditing: boolean) => void>,
 			required: false,
 			default: () => {},
 		},
@@ -42,10 +42,10 @@ const TaskControls = defineComponent({
 	methods: {
 		_toggleEdit() {
 			this.inEditMode = !this.inEditMode;
-			this.onToggleEdit(this.inEditMode);
+			this.onToggleEdit(this.task, this.inEditMode);
 		},
 		_save() {
-			this.onSave(this.item);
+			this.onSave(this.task);
 		},
 	},
 });

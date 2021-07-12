@@ -5,14 +5,14 @@
 			v-for="task in tasks" 
 			:key="task.id"
 		>
-			<Task :item="task" ref="taskComponent" />
+			<Task :task="task" :ref="setTaskComponentRef" />
 			<TaskStatus 
 				v-if="statuses.length > 0" 
 				:task="task"
 				:statuses="statuses"
 			/>
 			<TaskControls 
-				:item="task"
+				:task="task"
 				:onSave="onSave"
 				:onToggleEdit="onToggleEdit"
 			/>
@@ -21,7 +21,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType } from 'vue' ;
+import { defineComponent, PropType, DefineComponent } from 'vue' ;
 import Task, { TaskObject } from '@/components/Task.vue';
 import TaskStatus, { StatusObject } from '@/components/TaskStatus.vue';
 import TaskControls from '@/components/TaskControls.vue';
@@ -44,21 +44,32 @@ const TaskList = defineComponent({
 			required: true,
 		},
 	},
+	data() {
+		return {
+			taskComponentRefs: [] as any[],
+		};
+	},
 	methods: {
+		setTaskComponentRef(el: any) {
+			if (el) {
+				this.taskComponentRefs.push(el);
+			}
+		},
 		findRelatedStatus(id: number) {
 			return this.statuses.find(s => s.id === id) as StatusObject;
 		},
 		async onSave(aTask: TaskObject) {
 			api.patch('/api/tasks', {db: 'cengine'}, aTask);
 		},
-		onToggleEdit(aEditing: boolean) {
-			const taskComponent = this.$refs.taskComponent as any;
+		onToggleEdit(aTask: TaskObject, aEditing: boolean) {
+			const taskComponent = this.taskComponentRefs.find(tc => tc.task === aTask);
 
-			if (taskComponent) {
-				taskComponent.toggleEdit();
-			}
+			taskComponent.toggleEdit();
 		},
-	}
+	},
+	beforeUpdate() {
+		this.taskComponentRefs = [];
+	},
 });
 
 export default TaskList;

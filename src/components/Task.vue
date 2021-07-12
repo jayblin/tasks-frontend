@@ -1,13 +1,13 @@
 <template>
 	<div class="task">
-		<div class="task_id">{{ item.id }}</div>
+		<div class="task_id">{{ task.id }}</div>
 		<div class="task_title"></div>
 		<div class="task_created-at">Создано: {{ readableCreatedAt }}</div>
 		<Fold :opened="foldOpened" ref="fold">
 			<template v-slot:content>
 				<textarea 
 					class="task_description" 
-					v-model="item.description" 
+					v-model="task.description" 
 					ref='description'
 					:disabled="!inInputMode"
 					@input="onDescriptionInput"
@@ -34,7 +34,7 @@ const Task = defineComponent({
 		Fold,
 	},
 	props: {
-		item: {
+		task: {
 			type: Object as PropType<TaskObject>,
 			required: true,
 		},
@@ -73,7 +73,7 @@ const Task = defineComponent({
 	},
 	computed: {
 		readableCreatedAt(): string {
-			return this.toReadableDate(this.item.createdAt);
+			return this.toReadableDate(this.task.createdAt);
 		}
 	},
 	mounted() {}
