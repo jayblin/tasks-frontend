@@ -1,7 +1,7 @@
 <template>
 	<!--<img alt="Vue logo" src="./assets/logo.png"> -->
+	<Paginator :limit="8" @navigated="paginate" />
 	<TaskList :tasks="tasks" :statuses="statuses" />
-	<Paginator @navigated="paginate" />
 	<NotificationList :items="notifications" />
 </template>
 

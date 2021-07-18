@@ -3,17 +3,21 @@
 		<button class="btn --prev" @click="back">prev</button>
 		<div class="page" >{{ currentPage }}</div>
 		<button class="btn --next" @click="forward">next</button>
-		<input @change="navigate" v-model.number="limit" type="number" min="1" />
+		<NumberInput :default="_limit" :onChange="onLimitChange" />
 	</div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
+import NumberInput from '@/components/NumberInput.vue';
 
 export type PaginatorEventCallback = (aPage: number, aLimit: number) => void;
 
 const Paginator = defineComponent({
 	name: "Paginator",
+	components: {
+		NumberInput,
+	},
 	props: {
 		limit: {
 			type: Number,
@@ -23,7 +27,7 @@ const Paginator = defineComponent({
 	data() {
 		return {
 			currentPage: 1,
-			limit: 8,
+			_limit: this.limit,
 		};
 	},
 	emits: ['navigated'],
@@ -37,10 +41,17 @@ const Paginator = defineComponent({
 			this.navigate();
 		},
 		navigate() {
-			this.$emit('navigated', this.currentPage, this.limit);
-		}
+			this.$emit('navigated', this.currentPage, this._limit);
+		},
+		onLimitChange (aValue: number) {
+			console.log();
+			this._limit = aValue;
+			this.navigate();
+		},
 	},
-	mounted() { this.$emit('navigated', 1, this.limit); }
+	mounted() {
+		this.$emit('navigated', 1, this._limit);
+	},
 });
 
 export default Paginator;
@@ -60,8 +71,5 @@ export default Paginator;
 	padding: 1em;
 	appearance: none;
 	border: 1px solid;
-}
-.paginator input[type="number"] {
-	max-width: 6ch;
 }
 </style>
