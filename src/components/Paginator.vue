@@ -1,8 +1,8 @@
 <template>
 	<div class="paginator">
-		<button class="btn --prev" @click="back">prev</button>
+		<button ref="prevBtnRef" class="btn --prev" @click="back">prev</button>
 		<div class="page" >{{ currentPage }}</div>
-		<button class="btn --next" @click="forward">next</button>
+		<button ref="nextBtnRef" class="btn --next" @click="forward">next</button>
 		<NumberInput :default="_limit" :onChange="onLimitChange" />
 	</div>
 </template>
@@ -34,23 +34,42 @@ const Paginator = defineComponent({
 	methods: {
 		back() {
 			this.currentPage--;
-			this.navigate();
 		},
 		forward() {
 			this.currentPage++;
-			this.navigate();
 		},
 		navigate() {
 			this.$emit('navigated', this.currentPage, this._limit);
 		},
 		onLimitChange (aValue: number) {
-			console.log();
 			this._limit = aValue;
 			this.navigate();
 		},
+		toggleButtons() {
+			const nextBtnRef = this.$refs.nextBtnRef as HTMLButtonElement;
+			const prevBtnRef = this.$refs.prevBtnRef as HTMLButtonElement;
+
+			if (this.currentPage > 1) {
+				if (prevBtnRef.hasAttribute('disabled')) {
+					prevBtnRef.removeAttribute('disabled');
+				}
+			}
+			else {
+				if (!prevBtnRef.hasAttribute('disabled')) {
+					prevBtnRef.setAttribute('disabled', '');
+				}
+			}
+		},
 	},
 	mounted() {
+		this.toggleButtons();
 		this.$emit('navigated', 1, this._limit);
+	},
+	watch: {
+		currentPage() {
+			this.toggleButtons();
+			this.navigate();
+		}
 	},
 });
 
@@ -72,6 +91,10 @@ export default Paginator;
 	padding: 1em;
 	appearance: none;
 	border: 1px solid;
+}
+.paginator button.btn:disabled {
+	background-color: #00bcd444;
+	cursor: unset;
 }
 .paginator .page {
 	align-self: center;
