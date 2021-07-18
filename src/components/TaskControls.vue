@@ -18,6 +18,7 @@
 <script lang="ts">
 import { defineComponent, PropType } from 'vue';
 import { TaskObject } from '@/components/Task.vue';
+import { useContext } from '@/components/DatabaseContext.vue';
 import api from '@/utils/api';
 
 const TaskControls = defineComponent({
@@ -52,7 +53,7 @@ const TaskControls = defineComponent({
 			this.onSave(this.task);
 		},
 		_delete() {
-			api.delete('/api/tasks', { db: 'cengine', task_id: this.task.id });
+			api.delete('/api/tasks', { db: useContext().dbName, task_id: this.task.id });
 		}
 	},
 });

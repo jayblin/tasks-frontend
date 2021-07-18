@@ -8,6 +8,7 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { TaskObject } from '@/components/Task.vue';
+import { useContext } from '@/components/DatabaseContext.vue';
 import api from '@/utils/api';
 
 const TaskPoster = defineComponent({
@@ -25,7 +26,7 @@ const TaskPoster = defineComponent({
 				description: textareaRef.value,
 			};
 			
-			const result = await api.post('/api/tasks', {db: 'cengine'}, task);
+			const result = await api.post('/api/tasks', {db: useContext().dbName}, task);
 		},
 		onInput(aEvent: InputEvent) {
 			const textareaRef = this.$refs.textareaRef as HTMLTextAreaElement;
