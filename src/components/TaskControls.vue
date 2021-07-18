@@ -8,12 +8,17 @@
 			@click="_save"
 			class="btn save"
 		>&#10004;</button>
+		<button
+			@click="_delete"
+			class="btn delete"
+		>&#10006;</button>
 	</div>
 </template>
 
 <script lang="ts">
 import { defineComponent, PropType } from 'vue';
 import { TaskObject } from '@/components/Task.vue';
+import api from '@/utils/api';
 
 const TaskControls = defineComponent({
 	name: "TaskControls",
@@ -36,7 +41,6 @@ const TaskControls = defineComponent({
 	data() {
 		return {
 			inEditMode: false,
-			/* _item: JSON.parse(JSON.stringify(this.item)), */
 		};
 	},
 	methods: {
@@ -47,6 +51,9 @@ const TaskControls = defineComponent({
 		_save() {
 			this.onSave(this.task);
 		},
+		_delete() {
+			api.delete('/api/tasks', { db: 'cengine', task_id: this.task.id });
+		}
 	},
 });
 
