@@ -36,6 +36,15 @@ class API
 		return this._request<T>(url.toString(), "PATCH", aData);
 	}
 
+	public async post<T>(aPath: string, aParams: Record<string, any>, aData: any): Promise<APIResponse<T>>
+	{
+		const url = new URL(this._formPath(aPath));
+
+		this._appendParams(url, aParams);
+
+		return this._request<T>(url.toString(), "POST", aData);
+	}
+
 	private _formPath(aPath: string): string
 	{
 		return `${this.host}:${this.port}${aPath}`;

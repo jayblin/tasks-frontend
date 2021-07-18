@@ -2,6 +2,7 @@
 	<!--<img alt="Vue logo" src="./assets/logo.png"> -->
 	<Paginator :limit="8" @navigated="paginate" />
 	<TaskList :tasks="tasks" :statuses="statuses" />
+	<TaskPoster />
 	<NotificationList :items="notifications" />
 </template>
 
@@ -13,6 +14,7 @@ import { TaskObject } from '@/components/Task.vue';
 import { StatusObject } from '@/components/TaskStatus.vue';
 import Paginator from '@/components/Paginator.vue';
 import NotificationList from '@/components/NotificationList.vue';
+import TaskPoster from '@/components/TaskPoster.vue';
 import api, { APINotification } from '@/utils/api';
 
 async function fetchTasks(
@@ -53,6 +55,7 @@ export default defineComponent({
 		TaskList,
 		Paginator,
 		NotificationList,
+		TaskPoster,
 	},
 	data() {
 		return {
