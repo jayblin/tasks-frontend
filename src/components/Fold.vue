@@ -105,13 +105,17 @@ export default Fold;
 	width: 3ch;
 	height: 3ch;
 	padding: 0;
+	border: 1px solid #cccccc;
+	width: 20px;
+	height: 20px;
 
 	appearance: none;
-	border: none;
 	background-color: transparent;
 	cursor: pointer;
 }
 .fold_toggler::after {
-	content: "\2795";
+	content: "+";
+	font-size: 20px;
+	line-height: 0.9em;
 }
 </style>

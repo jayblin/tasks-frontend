@@ -56,9 +56,9 @@ export default NumberInput;
 	position: absolute;
 	width: 10px;
 	height: 10px;
-	border-top: 3px solid black;
-	border-right: 3px solid black;
-	border-radius: 3px 0px;
+	border-top: 2.8px solid black;
+	border-right: 2.8px solid black;
+	border-radius: 2.8px 0px;
 	right: calc(10px / 2);
 	cursor: pointer;
 }

@@ -62,6 +62,7 @@ export default Paginator;
 .paginator {
 	display: flex;
 	justify-content: center;
+	margin-bottom: 1em;
 }
 .paginator button.btn {
 	cursor: pointer;
@@ -71,5 +72,12 @@ export default Paginator;
 	padding: 1em;
 	appearance: none;
 	border: 1px solid;
+}
+.paginator .page {
+	align-self: center;
+	margin: 0.6em;
+}
+.paginator .number-input {
+	margin-left: 1em;
 }
 </style>
