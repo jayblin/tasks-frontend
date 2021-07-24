@@ -2,7 +2,8 @@
 	<div class="task">
 		<div class="task_id">{{ task.id }}</div>
 		<div class="task_title"></div>
-		<div class="task_created-at">Создано: {{ readableCreatedAt }}</div>
+		<div class="task_created-at">Создано: {{ toReadableDate(task.createdAt) }}</div>
+		<div class="task__updated-at">Обновлено: {{ toReadableDate(task.updatedAt) }}</div>
 		<Fold :opened="foldOpened" ref="fold">
 			<template v-slot:content>
 				<textarea 
@@ -46,7 +47,11 @@ const Task = defineComponent({
 		};
 	},
 	methods: {
-		toReadableDate(aDate: string): string {
+		toReadableDate(aDate: string|null|undefined): string {
+			if (!aDate) {
+				return "";
+			}
+
 			const format = Intl.DateTimeFormat('ru-RU', {
 				dateStyle: 'medium',
 				timeStyle: 'medium',
@@ -71,11 +76,6 @@ const Task = defineComponent({
 			fold.resize();
 		},
 	},
-	computed: {
-		readableCreatedAt(): string {
-			return this.toReadableDate(this.task.createdAt);
-		}
-	},
 	mounted() {}
 });
 
@@ -89,6 +89,7 @@ export default Task;
 	grid-template-rows: 1em auto;
 	grid-template-areas: 
 		"id created"
+		"id updated"
 		"descr descr";
 	text-align: start;
 	row-gap: 1em;
@@ -116,5 +117,9 @@ export default Task;
 .task_created-at {
 	margin-right: 1em;
 	grid-area: created;
+}
+.task__updated-at {
+	margin-right: 1em;
+	grid-area: updated;
 }
 </style>
